@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require("express");
 const mysql = require("mysql2");
 const cors = require("cors");
@@ -8,20 +9,23 @@ app.use(express.json());
 
 
 const db = mysql.createConnection({
-    host: "localhost",
-    user: "root",
-    password: "123456", 
-    database: "nail_booking"
+    host: process.env.DB_HOST,
+    port: process.env.DB_PORT,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASS,
+    database: process.env.DB_NAME,
+    ssl: {
+        rejectUnauthorized: false
+    }
 });
 
-db.connect(err => {
+db.connect((err) => {
     if (err) {
-        console.error("Database connection failed:", err);
+        console.error("Cloud Database connection failed:", err.message);
         return;
     }
-    console.log("Connected to MySQL");
+    console.log("Connected to Aiven MySQL Cloud!");
 });
-
 
 app.get("/services", (req, res) => {
     db.query("SELECT * FROM service", (err, result) => {
@@ -245,6 +249,7 @@ app.post("/appointment/payment", (req, res) => {
     });
 });
 
-app.listen(3000, () => {
-    console.log("Server running on port 3000");
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
 });
