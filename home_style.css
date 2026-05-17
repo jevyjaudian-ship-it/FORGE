@@ -16,7 +16,6 @@ body, html {
     color: white;
 }
 
-/* NAVBAR */
 .navbar {
     position: absolute;
     top: 0;
@@ -65,7 +64,7 @@ body, html {
     color: black !important;
 }
 
-/* HERO SECTION */
+
 .hero {
     position: relative;
     height: 100vh;
@@ -73,7 +72,6 @@ body, html {
     align-items: center;
     justify-content: center;
     text-align: center;
-    /* REPLACE THIS URL WITH A LUXURY NAIL IMAGE URL */
     background-image: url('bg_image.avif');
     background-size: cover;
     background-position: center;
@@ -107,9 +105,9 @@ body, html {
     margin-bottom: 40px;
 }
 
-/* THE CALL TO ACTION BUTTON */
+
 .cta-btn {
-    background-color: #c9302c; /* Red like the 'Viewership' image */
+    background-color: #c9302c; 
     color: white;
     border: none;
     padding: 18px 45px;
@@ -122,7 +120,7 @@ body, html {
 
 .cta-btn:hover {
     transform: scale(1.1);
-    background-color: var(--gold); /* Changes to Gold on hover */
+    background-color: var(--gold); 
     color: black;
 }
 

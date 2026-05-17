@@ -41,7 +41,7 @@
     </div>
 </div>
 
-<!-- MODAL FOR ADDING STAFF -->
+
 <div id="staffModal" class="modal">
     <div class="modal-content">
         <h3>👤 Add New Staff</h3>
@@ -55,7 +55,6 @@
     </div>
 </div>
 
-    <!-- STATS CARDS -->
     <div class="stats-row">
         <div class="stat-card">
             <i class="fas fa-coins"></i>
@@ -74,7 +73,6 @@
         </div>
     </div>
 
-    <!-- MAIN APPOINTMENTS TABLE -->
     <div class="table-container">
         <h2>Recent Bookings</h2>
         <table id="admin-table">
@@ -96,16 +94,14 @@
 </div>
 
 <script>
-    // 1. SECURITY CHECK - Now using the luxury modal
+  
     const role = localStorage.getItem("userRole");
     if (role !== 'admin') {
-        // We set a small delay so the page has time to load the modal HTML
         setTimeout(() => {
             showAlert("Access Denied", "Admins only! Please login with an authorized account.", "login.html");
         }, 100);
     }
 
-    // 2. LOAD STATS
     function loadStats() {
         fetch("http://localhost:3000/admin/stats")
         .then(res => res.json())
@@ -116,7 +112,7 @@
         });
     }
 
-    // 3. LOAD TABLE
+  
     function loadTable() {
         fetch("http://localhost:3000/admin/appointments")
         .then(res => res.json())
@@ -146,7 +142,6 @@
         });
     }
 
-    // 4. UPDATE APPOINTMENT STATUS
     function updateStatus(id, newStatus) {
         fetch("http://localhost:3000/admin/update-status", {
             method: "POST",
@@ -159,13 +154,12 @@
         });
     }
 
-    // 5. MODAL TOGGLE (For Service/Staff Forms)
+
     function toggleModal(id) {
         const modal = document.getElementById(id);
         modal.style.display = (modal.style.display === "flex") ? "none" : "flex";
     }
 
-    // 6. SAVE SERVICE - Updated to use showAlert
     function saveService() {
         const data = {
             service_name: document.getElementById('s-name').value,
@@ -179,12 +173,11 @@
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(data)
         }).then(() => {
-            toggleModal('serviceModal'); // Close the form
+            toggleModal('serviceModal'); 
             showAlert("✨ Success", "New service has been added to the menu!", "admin.html");
         });
     }
 
-    // 7. SAVE STAFF - Updated to use showAlert
     function saveStaff() {
         const data = {
             full_name: document.getElementById('st-name').value,
@@ -197,12 +190,11 @@
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(data)
         }).then(() => {
-            toggleModal('staffModal'); // Close the form
+            toggleModal('staffModal'); 
             showAlert("👤 Success", "New staff member has been registered!", "admin.html");
         });
     }
 
-    // 8. THE CUSTOM MODAL FUNCTION
     function showAlert(title, message, redirectUrl = null) {
         document.getElementById("alertTitle").innerText = title;
         document.getElementById("alertMessage").innerText = message;
@@ -216,7 +208,6 @@
         };
     }
 
-    // Initial Load
     loadStats();
     loadTable();
 </script>

@@ -25,7 +25,6 @@ body {
 
 .admin-header h1 span { color: var(--gold); }
 
-/* STATS CARDS */
 .stats-row {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -45,7 +44,7 @@ body {
 .stat-card h3 { font-size: 2rem; margin: 5px 0; }
 .stat-card p { color: #888; font-size: 0.9rem; }
 
-/* TABLE STYLING */
+
 .table-container {
     background: var(--panel);
     padding: 30px;
@@ -71,12 +70,12 @@ td {
     border-bottom: 1px solid #222;
 }
 
-/* Status Colors */
+
 .status-pending { color: #ffa500; font-weight: bold; }
 .status-confirmed { color: #00ff00; font-weight: bold; }
 .status-cancelled { color: #ff4d4d; font-weight: bold; }
 
-/* Buttons */
+
 .btn-confirm { background: #28a745; color: white; border: none; padding: 5px 10px; cursor: pointer; border-radius: 4px; }
 .btn-cancel { background: #dc3545; color: white; border: none; padding: 5px 10px; cursor: pointer; border-radius: 4px; }
 
@@ -97,7 +96,7 @@ td {
     letter-spacing: 1px;
 }
 
-/* Management Buttons in Header */
+
 .action-btn {
     background: transparent;
     border: 1px solid var(--gold);
@@ -116,7 +115,7 @@ td {
     font-weight: bolder;
 }
 
-/* Modal Background */
+
 .modal {
     display: none;
     position: fixed;
@@ -130,7 +129,7 @@ td {
     font-weight: bolder;
 }
 
-/* Modal Box */
+
 .modal-content {
     background: #1a1a1a;
     border: 1px solid var(--gold);
@@ -156,9 +155,9 @@ td {
 .btn-save { background: var(--gold); border: none; padding: 12px; font-weight: bold; cursor: pointer; border-radius: 5px; }
 .btn-close { background: transparent; color: #888; border: none; cursor: pointer; }
 
-/* Custom Alert Overlay */
+
 .alert-overlay {
-    display: none; /* Hidden by default */
+    display: none; 
     position: fixed;
     top: 0; left: 0;
     width: 100%; height: 100%;
@@ -169,7 +168,6 @@ td {
     align-items: center;
 }
 
-/* The Modal Card */
 .alert-card {
     background: #1a1a1a;
     border: 2px solid #d4af37;
@@ -202,7 +200,6 @@ td {
     line-height: 1.5;
 }
 
-/* Modal Button */
 #alertBtn {
     background: #d4af37;
     color: black;

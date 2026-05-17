@@ -83,11 +83,10 @@
         const paymentMethod = document.getElementById("payment-method").value;
         const payBtn = document.querySelector("button[onclick='confirmAndPay()']");
         
-        // Disable button to prevent double-booking
+
         payBtn.innerText = "Processing...";
         payBtn.disabled = true;
 
-        // Step 1: Create the Appointment
         fetch("http://localhost:3000/appointment", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -97,14 +96,12 @@
         .then(data => {
             const appointmentId = data.appointment_id;
 
-            // Step 2: Save Services
             fetch("http://localhost:3000/appointment/services", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ appointment_id: appointmentId, services: booking.services })
             });
 
-            // Step 3: Record Payment
             fetch("http://localhost:3000/appointment/payment", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -114,7 +111,7 @@
                     payment_method: paymentMethod
                 })
             }).then(() => {
-                // SUCCESS: Show the luxury popup
+    
                 showAlert(
                     "🎉 Confirmed!", 
                     "Thank you for choosing FORGE. Your appointment has been successfully recorded.", 
@@ -130,7 +127,6 @@
         });
     }
 
-    // Custom Modal Function (Ensure the HTML/CSS for this is in your checkout page!)
     function showAlert(title, message, redirectUrl = null) {
         document.getElementById("alertTitle").innerText = title;
         document.getElementById("alertMessage").innerText = message;

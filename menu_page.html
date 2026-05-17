@@ -22,7 +22,6 @@
         </header>
 
         <div id="menu-container" class="menu-grid">
-            <!-- Services will be injected here -->
             <div class="loading">Polishing the menu...</div>
         </div>
 
@@ -37,7 +36,7 @@
         .then(res => res.json())
         .then(data => {
             const container = document.getElementById("menu-container");
-            container.innerHTML = ""; // Clear loading text
+            container.innerHTML = ""; 
 
             data.forEach(service => {
                 const item = document.createElement("div");

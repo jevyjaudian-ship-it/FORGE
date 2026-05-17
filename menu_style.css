@@ -83,7 +83,6 @@ body {
 .item-meta { font-size: 0.8rem; color: #888; margin-top: 15px; }
 .item-meta i { color: var(--gold); margin-right: 5px; }
 
-/* FOOTER */
 .menu-footer { text-align: center; margin-top: 50px; padding: 40px; }
 .menu-footer p { color: #666; font-size: 0.8rem; margin-bottom: 30px; }
 
@@ -101,7 +100,6 @@ body {
 
 .main-book-btn:hover { background: white; box-shadow: 0 0 20px var(--gold); }
 
-/* RESPONSIVE */
 @media (max-width: 768px) {
     .menu-grid { grid-template-columns: 1fr; }
     .menu-header h1 { font-size: 2.5rem; }

@@ -1,6 +1,5 @@
-/* General Layout */
+
 body {
-    /* Uses your local file. Added a lighter overlay (0.5) so it's not "just gray" */
     background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7)), 
                 url('bg_image.avif'); 
     
@@ -17,15 +16,15 @@ body {
     color: white;
 }
 
-/* 1. Position the container in the top-left of the screen */
+
 .nav-container {
-    position: absolute; /* Takes it out of the normal flow */
-    top: 45px;          /* Adjust this to match the height of your H1 */
-    left: 40px;         /* Distance from the left edge */
+    position: absolute; 
+    top: 45px;          
+    left: 40px;         
     z-index: 100;
 }
 
-/* 2. Refine the button look */
+
 .btn-back {
     background: transparent;
     border: 1px solid rgba(212, 175, 55, 0.4);
@@ -51,10 +50,10 @@ body {
     box-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
 }
 
-/* 3. Ensure the Title stays centered and at the same height */
+
 h1 {
     text-align: center;
-    margin-top: 40px; /* Adjust this to align with the button's 'top' value */
+    margin-top: 40px; 
     margin-bottom: 40px;
     font-family: 'Playfair Display', serif;
     letter-spacing: 3px;
@@ -62,20 +61,20 @@ h1 {
 }
 
 .section {
-    width: 90%;            /* Fills 90% of the screen on mobile */
-    max-width: 700px;      /* Stops growing at 700px so both sections stay the same size */
-    margin: 0 auto 30px;   /* Centers the boxes and adds space between them */
+    width: 90%;            
+    max-width: 700px;      
+    margin: 0 auto 30px;   
     
-    /* Keep your existing style properties below */
+
     background-color: rgba(20, 20, 20, 0.5) !important;
     backdrop-filter: blur(12px);
     border: 1px solid rgba(245, 198, 44, 0.63);
     border-radius: 20px;
     padding: 30px;
-    box-sizing: border-box; /* Important: keeps padding from pushing the width out */
+    box-sizing: border-box; 
 }
 
-/* Ensure the titles stay the same size and centered */
+
 .section h2 {
     font-size: 1.5rem;
     margin-bottom: 20px;
@@ -83,15 +82,15 @@ h1 {
     color: rgba(241, 217, 84, 0.959);
 }
 
-/* Make sure the internal cards fill up the space inside the section */
+
 #services, #staff {
     display: grid;
-    grid-template-columns: 1fr 1fr; /* Forces 2 equal columns */
+    grid-template-columns: 1fr 1fr;
     gap: 15px;
 }
 
 .card {
-    /* 0.1 makes it very transparent, just a hint of dark */
+
     background: rgba(255, 255, 255, 0.05) !important; 
     
     border: 1px solid rgba(212, 175, 55, 0.2);
@@ -103,14 +102,13 @@ h1 {
     
 }
 
-/* When you hover, make it light up a bit more */
+
 .card:hover {
     background: rgba(212, 175, 55, 0.2) !important;
     border-color: gold;
     color: hsla(51, 100%, 70%, 0.826);
 }
 
-/* When a card is clicked/selected */
 .card.selected {
     background: #FFD700;
     color: #FFD700;
@@ -118,7 +116,7 @@ h1 {
     font-weight: bold;
 }
 
-/* Inputs & Button */
+
 input[type="date"], input[type="time"] {
     background: #222;
     border: 1px solid #FFD700;
@@ -145,13 +143,13 @@ button:hover {
     background: #ffd900a6;
 }
 
-/* This targets EVERY input inside your sections, including the ones Flatpickr creates */
+
 .section input, 
 .flatpickr-input, 
 .flatpickr-input.form-control {
-    background-color: #1a1a1a !important; /* Dark background */
-    border: 1px solid #d4af37 !important;   /* Gold border */
-    color: #d4af37 !important;              /* Gold text */
+    background-color: #1a1a1a !important; 
+    border: 1px solid #d4af37 !important;   
+    color: #d4af37 !important;              
     padding: 12px 15px !important;
     border-radius: 8px !important;
     font-size: 1rem !important;
@@ -163,7 +161,6 @@ button:hover {
     box-sizing: border-box !important;
 }
 
-/* Fix the "ghost" white background that some browsers force */
 input:-webkit-autofill,
 input:-webkit-autofill:hover, 
 input:-webkit-autofill:focus {
@@ -171,14 +168,14 @@ input:-webkit-autofill:focus {
     -webkit-box-shadow: 0 0 0px 1000px #1a1a1a inset !important;
 }
 
-/* This styles the placeholder text inside the inputs */
+
 ::placeholder {
-    color: rgba(212, 175, 55, 0.7) !important; /* Gold with some transparency */
+    color: rgba(212, 175, 55, 0.7) !important; 
     font-style: normal;
     font-weight: bold;
 }
 
-/* Also target the specific Flatpickr 'alt-input' that is generated */
+
 .flatpickr-input::placeholder {
     color: rgba(212, 175, 55, 0.7) !important;
 }
@@ -199,20 +196,20 @@ input:-webkit-autofill:focus {
 
 
 .datetime-wrapper {
-    display: flex;            /* Enables flexible layout */
-    justify-content: center;  /* Centers horizontally */
-    align-items: center;      /* Centers vertically */
-    gap: 20px;                /* Sets an exact space between the two boxes */
-    width: 100%;              /* Takes full width of the section */
-    flex-wrap: wrap;          /* Allows them to stack if the screen is too small */
+    display: flex;            
+    justify-content: center;  
+    align-items: center;      
+    gap: 20px;                
+    width: 100%;              
+    flex-wrap: wrap;         
     margin-top: 10px;
 }
 
-/* Ensure the inputs themselves don't have extra margins pushing them away */
+
 .datetime-wrapper .flatpickr-input, 
 .datetime-wrapper input {
-    margin: 0 !important;     /* Remove the 10px margin we added earlier */
-    width: 180px !important;  /* Give them a fixed, identical width */
+    margin: 0 !important;     
+    width: 180px !important;  
 }
 
 @media (max-width: 768px) {
@@ -221,13 +218,13 @@ input:-webkit-autofill:focus {
         top: 0;
         left: 0;
         margin: 20px auto;
-        justify-content: center; /* Center it on small screens */
+        justify-content: center; 
     }
 }
 
-/* Custom Alert Overlay */
+
 .alert-overlay {
-    display: none; /* Hidden by default */
+    display: none;
     position: fixed;
     top: 0; left: 0;
     width: 100%; height: 100%;
@@ -238,7 +235,6 @@ input:-webkit-autofill:focus {
     align-items: center;
 }
 
-/* The Modal Card */
 .alert-card {
     background: #1a1a1a;
     border: 2px solid #d4af37;
@@ -271,7 +267,6 @@ input:-webkit-autofill:focus {
     line-height: 1.5;
 }
 
-/* Modal Button */
 #alertBtn {
     background: #d4af37;
     color: black;
