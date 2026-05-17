@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FORGE| Home</title>
+    <link rel="icon" type="image/jpg" href="Hello.png">
+    <link rel="stylesheet" href="home_style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- NAVIGATION BAR -->
+    <nav class="navbar">
+        <div class="logo">FO<span>RGE</span></div>
+        <div class="nav-links" id="nav-auth">
+            <a href="login.html">Login</a>
+            <a href="signup_page.html" class="nav-btn">Sign Up</a>
+        </div>
+    </nav>
+
+    <!-- HERO SECTION -->
+    <header class="hero">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <h1>Introducing the World’s Leading<br>Luxury Nail Art Studio</h1>
+            <p>Experience elegance, precision, and the gold standard of nail care.</p>
+            <button class="cta-btn" onclick="goToDashboard()">Go to Dashboard</button>
+        </div>
+    </header>
+
+    <script>
+        // Check if user is logged in to change Nav links
+        const userName = localStorage.getItem("customerName");
+        if (userName) {
+            document.getElementById("nav-auth").innerHTML = `
+                <span class="welcome-msg">Hello, ${userName}</span>
+                <a href="#" onclick="logout()" class="logout-link">Logout</a>
+            `;
+        }
+
+        function goToDashboard() {
+            const customerId = localStorage.getItem("customerId");
+            if (!customerId) {
+                alert("Please login first to make an appointment!");
+                window.location.href = "login.html";
+            } else {
+                window.location.href = "dashboard_page.html";
+            }
+        }
+
+        function logout() {
+            localStorage.clear();
+            window.location.reload();
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Services Appointment Booking</title>
+    <link rel="icon" type="image/jpg" href="Hello.png">
+    <link rel="stylesheet" href="booking_page_style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" type="text/css" href="https://npmcdn.com/flatpickr/dist/themes/dark.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body>
+    <div id="customAlert" class="alert-overlay">
+    <div class="alert-card">
+        <div class="alert-icon"><i class="fas fa-check-circle"></i></div>
+        <h2 id="alertTitle">Success!</h2>
+        <p id="alertMessage">Your action was successful.</p>
+        <button id="alertBtn" onclick="closeAlert()">Continue</button>
+    </div>
+</div>
+
+
+    <!-- 1. Place the container at the very top -->
+    <div class="nav-container">
+        <button class="btn-back" onclick="window.location.href='dashboard_page.html'">
+            <i class="fas fa-arrow-left"></i> BACK TO DASHBOARD
+        </button>
+    </div>
+
+<body>
+ <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script> 
+<h1>BOOK APPOINMENT</h1>
+
+<!-- SERVICES -->
+<div class="section">
+    <h2>Select Services</h2>
+    <div id="services"></div>
+</div>
+
+<!-- STAFF -->
+<div class="section">
+    <h2>Select Staff</h2>
+    <div id="staff"></div>
+</div>
+
+<!-- DATE & TIME -->
+<div class="section">
+    <h2>Select Date & Time</h2>
+     <div class="datetime-wrapper">
+        <input type="text" id="date" placeholder="📅 Select Date">
+        <input type="text" id="time" placeholder="⏰ Select Time">
+    </div>
+</div>
+
+<!-- CONFIRM -->
+<div class="section">
+    <button onclick="book()">Confirm Booking</button>
+</div>
+
+<script>
+let selectedServices = [];
+let selectedStaff = null;
+
+// LOAD SERVICES
+fetch("http://localhost:3000/services")
+.then(res => res.json())
+.then(data => {
+    const container = document.getElementById("services");
+    data.forEach(service => {
+        const div = document.createElement("div");
+        div.className = "card";
+        div.innerHTML = `<b>${service.service_name}</b><br>₱${service.price}`;
+        div.onclick = () => {
+            div.classList.toggle("selected");
+            const index = selectedServices.findIndex(s => s.service_id === service.service_id);
+            if (index > -1) {
+                selectedServices.splice(index, 1);
+            } else {
+                selectedServices.push({ service_id: service.service_id, quantity: 1 });
+            }
+        };
+        container.appendChild(div);
+    });
+});
+
+// LOAD STAFF
+fetch("http://localhost:3000/staff")
+.then(res => res.json())
+.then(data => {
+    const container = document.getElementById("staff");
+    data.forEach(staff => {
+        const div = document.createElement("div");
+        div.className = "card";
+        div.innerHTML = `<b>${staff.full_name}</b><br>${staff.specialization}`;
+        div.onclick = () => {
+            document.querySelectorAll("#staff .card").forEach(c => c.classList.remove("selected"));
+            div.classList.add("selected");
+            selectedStaff = staff.staff_id;
+        };
+        container.appendChild(div);
+    });
+});
+
+// Appointment booking function
+function book() {
+    const date = document.getElementById("date").value;
+    const time = document.getElementById("time").value;
+
+    // 1. Validation check with custom modal
+    if (!selectedStaff || selectedServices.length === 0 || !date || !time) {
+        showAlert("Incomplete Selection", "Please select your services, preferred staff, and a date & time.");
+        return;
+    }
+
+    const pendingBooking = {
+        customer_id: localStorage.getItem("customerId"),
+        staff_id: selectedStaff,
+        services: selectedServices, 
+        date: date,
+        time: time
+    };
+
+    sessionStorage.setItem("pendingBooking", JSON.stringify(pendingBooking));
+
+    // 2. Success Modal before redirecting to checkout
+    showAlert("Selections Saved", "Everything looks perfect! Let's proceed to the final review.", "checkout_page.html");
+}
+
+// Custom Modal Function
+function showAlert(title, message, redirectUrl = null) {
+    document.getElementById("alertTitle").innerText = title;
+    document.getElementById("alertMessage").innerText = message;
+    document.getElementById("customAlert").style.display = "flex";
+
+    document.getElementById("alertBtn").onclick = function() {
+        document.getElementById("customAlert").style.display = "none";
+        if (redirectUrl) {
+            window.location.href = redirectUrl;
+        }
+    };
+}
+
+// Flatpickr Initializations
+flatpickr("#date", {
+    altInput: true,
+    altFormat: "F j, Y",
+    dateFormat: "Y-m-d",
+    minDate: "today",
+    placeholder: "Select Date" 
+});
+
+flatpickr("#time", {
+    enableTime: true,
+    noCalendar: true,
+    dateFormat: "H:i",
+    placeholder: "Select Time" 
+});
+</script>
+
+</body>
+</html>

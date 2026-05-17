@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>FORGE | Service Menu</title>
+    <link rel="stylesheet" href="menu_style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+    <nav class="menu-nav">
+        <a href="dashboard_page.html"><i class="fas fa-chevron-left"></i> Go back to Dashboard</a>
+        <div class="logo">FORGE<span>NAILS</span></div>
+        <a href="booking_page.html" class="book-link">Book Now</a>
+    </nav>
+
+    <div class="menu-wrapper">
+        <header class="menu-header">
+            <h1>Our Services</h1>
+            <p>Indulge in our curated selection of premium nail services.</p>
+        </header>
+
+        <div id="menu-container" class="menu-grid">
+            <!-- Services will be injected here -->
+            <div class="loading">Polishing the menu...</div>
+        </div>
+
+        <footer class="menu-footer">
+            <p>All prices are in PHP (₱). Prices may vary based on complexity of nail art.</p>
+            <button class="main-book-btn" onclick="window.location.href='booking_page.html'">Schedule Your Visit</button>
+        </footer>
+    </div>
+
+    <script>
+        fetch("http://localhost:3000/services")
+        .then(res => res.json())
+        .then(data => {
+            const container = document.getElementById("menu-container");
+            container.innerHTML = ""; // Clear loading text
+
+            data.forEach(service => {
+                const item = document.createElement("div");
+                item.className = "menu-item";
+                item.innerHTML = `
+                    <div class="item-header">
+                        <h3 class="item-name">${service.service_name}</h3>
+                        <span class="item-price">₱${Number(service.price).toLocaleString()}</span>
+                    </div>
+                    <p class="item-desc">${service.description || "A luxury treatment tailored to your needs."}</p>
+                    <div class="item-meta">
+                        <span><i class="far fa-clock"></i> ${service.duration} mins</span>
+                    </div>
+                `;
+                container.appendChild(item);
+            });
+        })
+        .catch(err => console.error("Menu Load Error:", err));
+    </script>
+</body>
+</html>

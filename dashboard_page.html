@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Forge Nails | Dashboard</title>
+    <link rel="icon" type="image/jpg" href="Hello.png">
+    <link rel="stylesheet" href="dashboard_style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+<div class="dashboard-container">
+    <!-- LEFT SIDE: CUSTOMER INFO -->
+    <aside class="sidebar">
+        <div class="profile-section">
+            <div class="avatar"><i class="fas fa-user-circle"></i></div>
+            <h3 id="cust-name">Loading...</h3>
+            <p id="cust-email">email@example.com</p>
+        </div>
+        
+        <nav class="side-nav">
+            <a href="#" class="active"><i class="fas fa-calendar-check"></i> My Appointments</a>
+            <a href="booking_page.html"><i class="fas fa-plus-circle"></i> Book New</a>
+            <a href="menu_page.html"><i class="fas fa-list"></i> View Services</a>
+            <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </nav>
+    </aside>
+
+    <!-- RIGHT SIDE: CONTENT -->
+    <main class="main-content">
+        <header class="content-header">
+            <h1>Welcome Back, <span id="welcome-name">User</span></h1>
+            <button class="book-now-btn" onclick="window.location.href='booking_page.html'">+ New Appointment</button>
+        </header>
+
+        <div class="dashboard-grid">
+            <!-- MY APPOINTMENTS SECTION -->
+            <section class="glass-panel">
+                <h2><i class="fas fa-clock"></i> Upcoming Appointments</h2>
+                <div id="appointment-list" class="list-container">
+                    <p class="empty-msg">No appointments scheduled yet.</p>
+                </div>
+            </section>
+
+            <!-- STAFF PREVIEW SECTION -->
+            <section class="glass-panel">
+                <h2><i class="fas fa-sparkles"></i> Our Expert Staff</h2>
+                <div id="staff-preview" class="staff-grid">
+                    <!-- Staff will load here -->
+                </div>
+            </section>
+        </div>
+    </main>
+</div>
+
+    <script>
+        // 1. GET DATA FROM STORAGE
+        const customerId = localStorage.getItem("customerId");
+        const customerName = localStorage.getItem("customerName");
+        const customerEmail = localStorage.getItem("customerEmail");
+
+        // 2. SECURITY CHECK: If not logged in, send back to login page
+        if (!customerId) {
+            window.location.href = "login.html";
+        }
+
+        // 3. UPDATE THE SIDEBAR & WELCOME TEXT
+        // This fills in your name and email in the gold sidebar
+        document.getElementById("cust-name").innerText = customerName;
+        document.getElementById("welcome-name").innerText = customerName;
+        document.getElementById("cust-email").innerText = customerEmail || "No email provided";
+
+        // 4. FETCH APPOINTMENTS FROM DATABASE
+        fetch(`http://localhost:3000/my-appointments/${customerId}`)
+        .then(res => res.json())
+        .then(data => {
+            const container = document.getElementById("appointment-list");
+            
+            if (data.length === 0) {
+                // If the user has no bookings yet, show this
+                container.innerHTML = `
+                    <div style="text-align:center; padding:20px; color:#555;">
+                        <p>No appointments scheduled yet.</p>
+                        <button onclick="window.location.href='booking_page.html'" 
+                                style="color:var(--gold); border:1px solid var(--gold); background:transparent; padding:5px 15px; cursor:pointer;">
+                            Book Now
+                        </button>
+                    </div>`;
+            } else {
+                container.innerHTML = ""; // Clear the "Loading" text
+                data.forEach(app => {
+                    const div = document.createElement("div");
+                    div.className = "list-item";
+                    div.innerHTML = `
+                        <div>
+                            <b>${app.date} at ${app.start_time}</b><br>
+                            <small>Staff: ${app.staff_name}</small>
+                        </div>
+                        <span class="status-tag">${app.status}</span>
+                    `;
+                    container.appendChild(div);
+                });
+            }
+        });
+
+        // 5. FETCH STAFF FOR THE RIGHT PANEL
+        fetch("http://localhost:3000/staff")
+        .then(res => res.json())
+        .then(data => {
+            const container = document.getElementById("staff-preview");
+            data.forEach(staff => {
+                const div = document.createElement("div");
+                div.className = "staff-card-mini";
+                div.innerHTML = `<b>${staff.full_name}</b><br><small>${staff.specialization}</small>`;
+                container.appendChild(div);
+            });
+        });
+
+        // 6. LOGOUT FUNCTION
+        function logout() {
+            localStorage.clear(); // Clears all saved info
+            window.location.href = "login.html";
+        }
+    </script>
+</body> <!-- This is the very end of your file -->
+
+</body>
+</html>

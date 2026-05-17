@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <link rel="icon" type="image/jpg" href="Hello.png">
+    <link rel="stylesheet" href="login_page.css"> <!-- Reuse the same CSS file -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <div id="customAlert" class="alert-overlay">
+    <div class="alert-card">
+        <div class="alert-icon"><i class="fas fa-check-circle"></i></div>
+        <h2 id="alertTitle">Success!</h2>
+        <p id="alertMessage">Your action was successful.</p>
+        <button id="alertBtn" onclick="closeAlert()">Continue</button>
+    </div>
+    </div>
+
+    <h1 class="page-header">JOIN US</h1>
+
+    <div class="main-wrapper">
+        <div class="luxury-card">
+            <h2 class="ui-title" id="ui-title2">Create Account</h2>
+
+            <div class="input-container">
+                <input type="text" id="reg-name" placeholder="Full Name">
+                <input type="text" id="reg-phone" placeholder="Phone Number">
+                <input type="email" id="reg-email" placeholder="Email Address">
+                <input type="password" id="reg-pass" placeholder="Create Password">
+            </div>
+
+            <div class="inner-footer">
+                <p>Already have an account? <a href="login.html">Login Here</a></p>
+            </div>
+        </div>
+
+        <button class="oval-login-btn" onclick="handleSignup()">Register</button>
+    </div>
+
+<script>
+function handleSignup() {
+    const name = document.getElementById('reg-name').value;
+    const phone = document.getElementById('reg-phone').value;
+    const email = document.getElementById('reg-email').value;
+    const pass = document.getElementById('reg-pass').value;
+
+    // 1. Validation check with custom modal
+    if(!name || !phone || !email || !pass) {
+        showAlert("Incomplete Info", "Please fill in all details to create your luxury account.");
+        return;
+    }
+
+    fetch("http://localhost:3000/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ 
+            name: name, 
+            phone_num: phone, 
+            email: email, 
+            password: pass 
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            // 2. Success handling - redirects to login ONLY after they click "Continue"
+            showAlert("Welcome!", "Registration Successful! You can now log in to your account.", "login.html");
+        } else {
+            // 3. Error handling (e.g. email already exists)
+            showAlert("Signup Failed", data.message);
+        }
+    })
+    .catch(err => {
+        console.error("Signup Error:", err);
+        showAlert("Server Error", "We couldn't reach the server. Please try again later.");
+    });
+}
+
+// Ensure this function is present in your signup.html as well
+function showAlert(title, message, redirectUrl = null) {
+    document.getElementById("alertTitle").innerText = title;
+    document.getElementById("alertMessage").innerText = message;
+    document.getElementById("customAlert").style.display = "flex";
+
+    document.getElementById("alertBtn").onclick = function() {
+        document.getElementById("customAlert").style.display = "none";
+        if (redirectUrl) {
+            window.location.href = redirectUrl;
+        }
+    };
+}
+</script>
+</body>
+</html>

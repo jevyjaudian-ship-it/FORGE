@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>FORGE Nails | Review & Checkout</title>
+    <link rel="stylesheet" href="booking_page_style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        .checkout-container { max-width: 600px; margin: 50px auto; padding: 40px; }
+        .summary-item { display: flex; justify-content: space-between; margin-bottom: 15px; border-bottom: 1px solid rgba(212,175,55,0.1); padding-bottom: 10px; }
+        .total-row { display: flex; justify-content: space-between; margin-top: 30px; font-size: 1.5rem; color: var(--gold); font-weight: bold; border-top: 2px solid var(--gold); padding-top: 20px; }
+        select { width: 100%; background: rgba(0,0,0,0.5); color: white; border: 1px solid var(--gold); padding: 15px; border-radius: 8px; margin-top: 20px; outline: none; }
+    </style>
+</head>
+<body>
+
+<body>
+    <div id="customAlert" class="alert-overlay">
+    <div class="alert-card">
+        <div class="alert-icon"><i class="fas fa-check-circle"></i></div>
+        <h2 id="alertTitle">Success!</h2>
+        <p id="alertMessage">Your action was successful.</p>
+        <button id="alertBtn" onclick="closeAlert()">Continue</button>
+    </div>
+</div>
+
+
+<div class="section checkout-container">
+    <h1 style="font-family: 'Playfair Display'; text-align: center;">Review & Checkout</h1>
+    
+    <div id="review-content">
+        <!-- Data will load here via JS -->
+    </div>
+
+    <div class="total-row">
+        <span>Total Amount</span>
+        <span id="final-total">₱0.00</span>
+    </div>
+
+    <h3>Payment Method</h3>
+    <select id="payment-method">
+        <option value="Cash">Pay at Salon (Cash/Card)</option>
+        <option value="GCash">GCash (Online)</option>
+        <option value="Debit Card">Debit Card</option>
+    </select>
+
+    <button onclick="confirmAndPay()" style="width: 100%; margin-top: 30px;">Confirm Booking</button>
+    <button onclick="window.history.back()" style="width: 100%; margin-top: 10px; background: transparent; border: 1px solid #555; color: #888;">Back to Edit</button>
+</div>
+
+<script>
+    const booking = JSON.parse(sessionStorage.getItem("pendingBooking"));
+    if (!booking) window.location.href = "booking_page.html";
+
+    fetch("http://localhost:3000/services")
+    .then(res => res.json())
+    .then(allServices => {
+        const content = document.getElementById("review-content");
+        let total = 0;
+
+        content.innerHTML += `<div class="summary-item"><span>Appointment Date</span> <b>${booking.date}</b></div>`;
+        content.innerHTML += `<div class="summary-item"><span>Arrival Time</span> <b>${booking.time}</b></div>`;
+        content.innerHTML += `<h3 style="margin-top:30px; color:var(--gold)">Selected Services</h3>`;
+
+        booking.services.forEach(selected => {
+            const serviceData = allServices.find(s => s.service_id === selected.service_id);
+            if (serviceData) {
+                total += parseFloat(serviceData.price);
+                content.innerHTML += `
+                    <div class="summary-item">
+                        <span>${serviceData.service_name}</span>
+                        <b>₱${serviceData.price}</b>
+                    </div>
+                `;
+            }
+        });
+
+        document.getElementById("final-total").innerText = `₱${total.toFixed(2)}`;
+        booking.total_amount = total;
+    });
+
+    function confirmAndPay() {
+        const paymentMethod = document.getElementById("payment-method").value;
+        const payBtn = document.querySelector("button[onclick='confirmAndPay()']");
+        
+        // Disable button to prevent double-booking
+        payBtn.innerText = "Processing...";
+        payBtn.disabled = true;
+
+        // Step 1: Create the Appointment
+        fetch("http://localhost:3000/appointment", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(booking)
+        })
+        .then(res => res.json())
+        .then(data => {
+            const appointmentId = data.appointment_id;
+
+            // Step 2: Save Services
+            fetch("http://localhost:3000/appointment/services", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ appointment_id: appointmentId, services: booking.services })
+            });
+
+            // Step 3: Record Payment
+            fetch("http://localhost:3000/appointment/payment", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    appointment_id: appointmentId,
+                    amount: booking.total_amount,
+                    payment_method: paymentMethod
+                })
+            }).then(() => {
+                // SUCCESS: Show the luxury popup
+                showAlert(
+                    "🎉 Confirmed!", 
+                    "Thank you for choosing FORGE. Your appointment has been successfully recorded.", 
+                    "dashboard_page.html"
+                );
+                sessionStorage.removeItem("pendingBooking");
+            });
+        })
+        .catch(err => {
+            payBtn.innerText = "Confirm Booking";
+            payBtn.disabled = false;
+            showAlert("System Error", "Something went wrong while processing your payment. Please try again.");
+        });
+    }
+
+    // Custom Modal Function (Ensure the HTML/CSS for this is in your checkout page!)
+    function showAlert(title, message, redirectUrl = null) {
+        document.getElementById("alertTitle").innerText = title;
+        document.getElementById("alertMessage").innerText = message;
+        document.getElementById("customAlert").style.display = "flex";
+
+        document.getElementById("alertBtn").onclick = function() {
+            document.getElementById("customAlert").style.display = "none";
+            if (redirectUrl) {
+                window.location.href = redirectUrl;
+            }
+        };
+    }
+</script>
+</body>
+</html>

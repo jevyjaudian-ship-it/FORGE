@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="login_page.css">
+    <link rel="icon" type="image/jpg" href="Hello.png">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+<div id="customAlert" class="alert-overlay">
+    <div class="alert-card">
+        <div class="alert-icon"><i class="fas fa-check-circle"></i></div>
+        <h2 id="alertTitle">Success!</h2>
+        <p id="alertMessage">Your action was successful.</p>
+        <button id="alertBtn">Continue</button>
+    </div>
+</div>
+
+<nav class="navbar">
+    <div class="logo">FO<span>RGE</span></div>
+</nav>
+
+<!-- ONLY ONE PAGE HEADER -->
+<h1 class="page-header">LOGIN</h1>
+
+<div class="main-wrapper">
+    <!-- THE FORM WRAPS THE CARD AND THE BUTTON -->
+    <form onsubmit="handleLogin(event)" class="login-form">
+        <div class="luxury-card">
+            <h2 class="ui-title">LOG IN</h2>
+
+            <div class="input-container">
+                <input type="text" id="username" placeholder="Username" autocomplete="off" required>
+                <input type="password" id="password" placeholder="Password" required>
+            </div>
+
+            <div class="inner-footer">
+                <p>Don't have an account? <a href="signup_page.html">Register</a></p>
+                <div class="social-row">
+                    <button type="button" class="social-btn"><i class="fab fa-google"></i></button>
+                    <button type="button" class="social-btn"><i class="fab fa-facebook-f"></i></button>
+                    <button type="button" class="social-btn"><i class="fab fa-twitter"></i></button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ONLY ONE BUTTON -->
+        <button type="submit" class="oval-login-btn">Login</button>
+    </form>
+</div>
+
+<script>
+function handleLogin(event) {
+
+    if (event) event.preventDefault();
+
+    const emailInput = document.getElementById('username').value;
+    const passwordInput = document.getElementById('password').value;
+
+    if (!emailInput || !passwordInput) {
+        // SWAPPED: alert -> showAlert
+        showAlert("Wait!", "Please fill in all fields before logging in.");
+        return;
+    }
+
+    fetch("http://localhost:3000/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ 
+            email: emailInput, 
+            password: passwordInput 
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            localStorage.setItem("customerId", data.customer_id);
+            localStorage.setItem("customerName", data.name);
+            localStorage.setItem("customerEmail", data.email);
+            localStorage.setItem("userRole", data.role);
+
+            // Determine where they go after clicking "Continue"
+            const destination = data.role === 'admin' ? "admin.html" : "dashboard_page.html";
+
+            // SWAPPED: alert -> showAlert
+            // We pass the destination as the 3rd argument
+            showAlert("Success", "Welcome back, " + data.name + "!", destination);
+
+        } else {
+            // SWAPPED: alert -> showAlert
+            showAlert("Login Failed", data.message);
+        }
+    })
+    .catch(err => {
+        showAlert("Server Error", "Could not connect to the server. Is it running?");
+    });
+}
+
+// Keep this function exactly as it is
+function showAlert(title, message, redirectUrl = null) {
+    document.getElementById("alertTitle").innerText = title;
+    document.getElementById("alertMessage").innerText = message;
+    document.getElementById("customAlert").style.display = "flex";
+
+    document.getElementById("alertBtn").onclick = function() {
+        document.getElementById("customAlert").style.display = "none";
+        if (redirectUrl) {
+            window.location.href = redirectUrl;
+        }
+    };
+}
+</script>
+</body>
+</html>

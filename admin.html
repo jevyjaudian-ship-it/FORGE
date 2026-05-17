@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Panel</title>
+    <link rel="icon" type="image/jpg" href="Hello.png">
+    <link rel="stylesheet" href="admin_style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+<div id="customAlert" class="alert-overlay">
+    <div class="alert-card">
+        <div class="alert-icon"><i class="fas fa-check-circle"></i></div>
+        <h2 id="alertTitle">Success!</h2>
+        <p id="alertMessage">Your action was successful.</p>
+        <button id="alertBtn" onclick="closeAlert()">Continue</button>
+    </div>
+</div>
+
+<header class="admin-header">
+    <h1>FO<span>RGE</span> Management <span>Dashboard</span></h1>
+    <div class="admin-actions">
+        <button class="action-btn" onclick="toggleModal('serviceModal')">+ Add Service</button>
+        <button class="action-btn" onclick="toggleModal('staffModal')">+ Add Staff</button>
+    </div>
+</header>
+
+<div id="serviceModal" class="modal">
+    <div class="modal-content">
+        <h3>✨ Add New Service</h3>
+        <input type="text" id="s-name" placeholder="Service Name">
+        <input type="text" id="s-desc" placeholder="Description">
+        <input type="number" id="s-price" placeholder="Price (₱)">
+        <input type="number" id="s-dur" placeholder="Duration (mins)">
+        <div class="modal-btns">
+            <button onclick="saveService()" class="btn-save">Save Service</button>
+            <button onclick="toggleModal('serviceModal')" class="btn-close">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL FOR ADDING STAFF -->
+<div id="staffModal" class="modal">
+    <div class="modal-content">
+        <h3>👤 Add New Staff</h3>
+        <input type="text" id="st-name" placeholder="Full Name">
+        <input type="text" id="st-spec" placeholder="Specialization">
+        <input type="text" id="st-phone" placeholder="Phone Number">
+        <div class="modal-btns">
+            <button onclick="saveStaff()" class="btn-save">Save Staff</button>
+            <button onclick="toggleModal('staffModal')" class="btn-close">Cancel</button>
+        </div>
+    </div>
+</div>
+
+    <!-- STATS CARDS -->
+    <div class="stats-row">
+        <div class="stat-card">
+            <i class="fas fa-coins"></i>
+            <h3 id="stat-revenue">₱0.00</h3>
+            <p>Today's Revenue</p>
+        </div>
+        <div class="stat-card">
+            <i class="fas fa-star"></i>
+            <h3 id="stat-staff">---</h3>
+            <p>Busiest Artist</p>
+        </div>
+        <div class="stat-card">
+            <i class="fas fa-bell"></i>
+            <h3 id="stat-pending">0</h3>
+            <p>Pending Requests</p>
+        </div>
+    </div>
+
+    <!-- MAIN APPOINTMENTS TABLE -->
+    <div class="table-container">
+        <h2>Recent Bookings</h2>
+        <table id="admin-table">
+            <thead>
+                <tr>
+                    <th>Customer</th>
+                    <th>Date & Time</th>
+                    <th>Staff</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="admin-tbody">
+                <!-- Data will load here -->
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    // 1. SECURITY CHECK - Now using the luxury modal
+    const role = localStorage.getItem("userRole");
+    if (role !== 'admin') {
+        // We set a small delay so the page has time to load the modal HTML
+        setTimeout(() => {
+            showAlert("Access Denied", "Admins only! Please login with an authorized account.", "login.html");
+        }, 100);
+    }
+
+    // 2. LOAD STATS
+    function loadStats() {
+        fetch("http://localhost:3000/admin/stats")
+        .then(res => res.json())
+        .then(data => {
+            document.getElementById("stat-revenue").innerText = `₱${data.today_revenue || 0}`;
+            document.getElementById("stat-staff").innerText = data.top_staff || "None";
+            document.getElementById("stat-pending").innerText = data.pending_count;
+        });
+    }
+
+    // 3. LOAD TABLE
+    function loadTable() {
+        fetch("http://localhost:3000/admin/appointments")
+        .then(res => res.json())
+        .then(data => {
+            const tbody = document.getElementById("admin-tbody");
+            if (!tbody) return;
+            tbody.innerHTML = ""; 
+
+            data.forEach(app => {
+                const tr = document.createElement("tr");
+                tr.innerHTML = `
+                    <td>${app.customer_name}</td>
+                    <td>
+                        <span style="color:white; font-weight:bold;">${app.formatted_date || 'No Date'}</span><br>
+                        <small style="color:var(--gold);">${app.start_time || 'Time Not Set'}</small>
+                    </td>
+                    <td>${app.staff_name}</td>
+                    <td style="font-family: monospace; font-weight: bold;">₱${Number(app.total_price).toFixed(2)}</td>
+                    <td><span class="status-${app.status.toLowerCase()}">${app.status}</span></td>
+                    <td>
+                        <button class="btn-confirm" onclick="updateStatus(${app.appointment_id}, 'Confirmed')">Check</button>
+                        <button class="btn-cancel" onclick="updateStatus(${app.appointment_id}, 'Cancelled')">×</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        });
+    }
+
+    // 4. UPDATE APPOINTMENT STATUS
+    function updateStatus(id, newStatus) {
+        fetch("http://localhost:3000/admin/update-status", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ appointment_id: id, status: newStatus })
+        })
+        .then(() => {
+            loadTable();
+            loadStats();
+        });
+    }
+
+    // 5. MODAL TOGGLE (For Service/Staff Forms)
+    function toggleModal(id) {
+        const modal = document.getElementById(id);
+        modal.style.display = (modal.style.display === "flex") ? "none" : "flex";
+    }
+
+    // 6. SAVE SERVICE - Updated to use showAlert
+    function saveService() {
+        const data = {
+            service_name: document.getElementById('s-name').value,
+            description: document.getElementById('s-desc').value,
+            price: document.getElementById('s-price').value,
+            duration: document.getElementById('s-dur').value
+        };
+
+        fetch("http://localhost:3000/admin/add-service", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data)
+        }).then(() => {
+            toggleModal('serviceModal'); // Close the form
+            showAlert("✨ Success", "New service has been added to the menu!", "admin.html");
+        });
+    }
+
+    // 7. SAVE STAFF - Updated to use showAlert
+    function saveStaff() {
+        const data = {
+            full_name: document.getElementById('st-name').value,
+            specialization: document.getElementById('st-spec').value,
+            phone_number: document.getElementById('st-phone').value
+        };
+
+        fetch("http://localhost:3000/admin/add-staff", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data)
+        }).then(() => {
+            toggleModal('staffModal'); // Close the form
+            showAlert("👤 Success", "New staff member has been registered!", "admin.html");
+        });
+    }
+
+    // 8. THE CUSTOM MODAL FUNCTION
+    function showAlert(title, message, redirectUrl = null) {
+        document.getElementById("alertTitle").innerText = title;
+        document.getElementById("alertMessage").innerText = message;
+        document.getElementById("customAlert").style.display = "flex";
+
+        document.getElementById("alertBtn").onclick = function() {
+            document.getElementById("customAlert").style.display = "none";
+            if (redirectUrl) {
+                window.location.href = redirectUrl;
+            }
+        };
+    }
+
+    // Initial Load
+    loadStats();
+    loadTable();
+</script>
+
+</body>
+</html>

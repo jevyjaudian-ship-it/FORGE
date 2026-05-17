@@ -1,0 +1,257 @@
+/* Color Palette */
+:root {
+    --gold: #d4af37;
+    --dark-bg: #0c0c0c;
+    --card-bg: #1a1a1a;
+    --input-bg: #111111;
+}
+
+.logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 4.5em;
+    font-weight: 900;
+    letter-spacing: 2px;
+    user-select: none; 
+}
+
+.logo span {
+    color: var(--gold);
+}
+
+
+
+
+body {
+    /* Uses your local file. Added a lighter overlay (0.5) so it's not "just gray" */
+    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7)), 
+                url('bg_image.avif'); 
+    
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    font-family: 'Poppins', sans-serif;
+    color: white;
+}
+/* Scaled down the header */
+.page-header {
+    font-family: 'Poppins', sans-serif;
+    font-size: 4rem; /* Reduced from 5rem */
+    color: white;
+    margin-bottom: 5px;
+    letter-spacing: -1px;
+    user-select: none;
+}
+
+.main-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 90%;
+    max-width: 450px; /* Made slightly narrower */
+}
+
+/* Adjusted padding for better fit */
+.luxury-card {
+    /* 0.75 means 75% solid. You can lower this (e.g., 0.5) to make it more see-through */
+    background-color: rgba(26, 26, 26, 0.75) !important; 
+    
+    /* This adds the "Glass" effect - very important! */
+    backdrop-filter: blur(10px); 
+    -webkit-backdrop-filter: blur(10px);
+
+    border: 2px solid rgb(235, 196, 112);
+    width: 100%;
+    padding: 40px 20px;
+    border-radius: 40px;
+    text-align: center;
+    box-shadow: 0 0 30px rgba(212, 175, 55, 0.2);
+    z-index: 1;
+}
+
+.ui-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 3.5rem; /* Reduced from 3.5rem */
+    color: #d4af37;
+    margin-bottom: 25px;
+    line-height: 1;
+    user-select: none;
+}
+
+#ui-title2{
+    font-size: 3em;
+}
+
+/* Inputs scaled slightly */
+.input-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.input-container input {
+    width: 85%;
+    background: var(--input-bg);
+    border: 1px solid var(--gold);
+    padding: 12px;
+    border-radius: 8px;
+    color: white;
+    font-size: 0.9rem;
+    outline: none;
+    text-align: center;
+}
+
+/* Scaled inner footer */
+.inner-footer {
+    /* Transparent dark background */
+    background-color: rgba(34, 34, 34, 0.5) !important;
+    width: 85%;
+    margin: 25px auto 0;
+    padding: 15px;
+    border-radius: 12px;
+    border-bottom: 2px solid var(--gold);
+}
+
+.inner-footer p {
+    color: #888;
+    margin-bottom: 10px;
+    font-size: 0.8rem;
+}
+
+.social-row {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.social-btn {
+    background: transparent;
+    border: 1px solid #444;
+    color: var(--gold);
+    padding: 8px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+/* Scaled the big button */
+.oval-login-btn {
+    background-color: var(--gold);
+    color: black;
+    border: none;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem; /* Reduced from 3rem */
+    padding: 10px 60px;
+    border-radius: 50px;
+    margin-top: -30px; /* Adjusted overlap */
+    cursor: pointer;
+    z-index: 2;
+    font-weight: 900;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+}
+
+.oval-login-btn:hover {
+    transition: transform 0.3s ease, background 0.3s ease;
+    transform: scale(1.1);
+    background-color: #c9302c; /* Changes to Gold on hover */
+    color: rgb(255, 255, 255);
+}
+
+.luxury-card {
+    min-height: 400px; /* Use min-height, not height */
+    height: auto;      /* Allows it to expand for more inputs */
+    padding-bottom: 80px; /* Space for the overlapping button */
+}
+
+/* Custom Alert Overlay */
+.alert-overlay {
+    display: none; /* Hidden by default */
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(10px);
+    z-index: 10000;
+    justify-content: center;
+    align-items: center;
+}
+
+/* The Modal Card */
+.alert-card {
+    background: #1a1a1a;
+    border: 2px solid #d4af37;
+    width: 350px;
+    padding: 40px;
+    border-radius: 30px;
+    text-align: center;
+    box-shadow: 0 0 40px rgba(212, 175, 55, 0.3);
+    animation: alertPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes alertPop {
+    from { transform: scale(0.8); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+.alert-icon { font-size: 3.5rem; color: #d4af37; margin-bottom: 20px; }
+
+.alert-card h2 {
+    font-family: 'Playfair Display', serif;
+    color: white;
+    font-size: 2rem;
+    margin-bottom: 10px;
+}
+
+.alert-card p {
+    color: #aaa;
+    font-size: 1rem;
+    margin-bottom: 30px;
+    line-height: 1.5;
+}
+
+/* Modal Button */
+#alertBtn {
+    background: #d4af37;
+    color: black;
+    border: none;
+    padding: 12px 40px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+#alertBtn:hover {
+    background: white;
+    box-shadow: 0 0 20px #d4af37;
+}
+
+/* Fix the form layout so the button stays centered and overlapping */
+.login-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+/* Ensure the card doesn't shrink inside the form */
+.luxury-card {
+    width: 100%;
+    max-width: 450px;
+    z-index: 1;
+}
+
+/* Adjust the button overlap now that it's inside a form */
+.oval-login-btn {
+    margin-top: -30px; /* This creates the overlap you had before */
+    z-index: 2;
+    position: relative;
+}
