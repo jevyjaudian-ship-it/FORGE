@@ -52,7 +52,7 @@
     const booking = JSON.parse(sessionStorage.getItem("pendingBooking"));
     if (!booking) window.location.href = "booking_page.html";
 
-    fetch("http://localhost:3000/services")
+    fetch("https://forge-r4qb.onrender.com/services")
     .then(res => res.json())
     .then(allServices => {
         const content = document.getElementById("review-content");
@@ -87,7 +87,7 @@
         payBtn.innerText = "Processing...";
         payBtn.disabled = true;
 
-        fetch("http://localhost:3000/appointment", {
+        fetch("https://forge-r4qb.onrender.com/appointment", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(booking)
@@ -96,13 +96,13 @@
         .then(data => {
             const appointmentId = data.appointment_id;
 
-            fetch("http://localhost:3000/appointment/services", {
+            fetch("https://forge-r4qb.onrender.com/appointment/services", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ appointment_id: appointmentId, services: booking.services })
             });
 
-            fetch("http://localhost:3000/appointment/payment", {
+            fetch("https://forge-r4qb.onrender.com/appointment/payment", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({

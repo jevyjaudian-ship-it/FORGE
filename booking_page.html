@@ -60,7 +60,7 @@
 let selectedServices = [];
 let selectedStaff = null;
 
-fetch("http://localhost:3000/services")
+fetch("https://forge-r4qb.onrender.com/services")
 .then(res => res.json())
 .then(data => {
     const container = document.getElementById("services");
@@ -82,7 +82,7 @@ fetch("http://localhost:3000/services")
 });
 
 
-fetch("http://localhost:3000/staff")
+fetch("https://forge-r4qb.onrender.com/staff")
 .then(res => res.json())
 .then(data => {
     const container = document.getElementById("staff");

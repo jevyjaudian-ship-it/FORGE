@@ -103,7 +103,7 @@
     }
 
     function loadStats() {
-        fetch("http://localhost:3000/admin/stats")
+        fetch("https://forge-r4qb.onrender.com/admin/stats")
         .then(res => res.json())
         .then(data => {
             document.getElementById("stat-revenue").innerText = `₱${data.today_revenue || 0}`;
@@ -114,7 +114,7 @@
 
   
     function loadTable() {
-        fetch("http://localhost:3000/admin/appointments")
+        fetch("https://forge-r4qb.onrender.com/admin/appointments")
         .then(res => res.json())
         .then(data => {
             const tbody = document.getElementById("admin-tbody");
@@ -143,7 +143,7 @@
     }
 
     function updateStatus(id, newStatus) {
-        fetch("http://localhost:3000/admin/update-status", {
+        fetch("https://forge-r4qb.onrender.com/admin/update-status", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ appointment_id: id, status: newStatus })
@@ -168,7 +168,7 @@
             duration: document.getElementById('s-dur').value
         };
 
-        fetch("http://localhost:3000/admin/add-service", {
+        fetch("https://forge-r4qb.onrender.com/admin/add-service", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(data)
@@ -185,7 +185,7 @@
             phone_number: document.getElementById('st-phone').value
         };
 
-        fetch("http://localhost:3000/admin/add-staff", {
+        fetch("https://forge-r4qb.onrender.com/admin/add-staff", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(data)

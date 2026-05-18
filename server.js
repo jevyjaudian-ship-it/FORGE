@@ -4,13 +4,18 @@ const mysql = require("mysql2");
 const cors = require("cors");
 
 const app = express();
+const path = require('path');
 app.use(cors());
 app.use(express.json());
 
+app.use(express.static(path.join(__dirname, '/')));
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
+});
 
 const db = mysql.createConnection({
     host: process.env.DB_HOST,
-    port: process.env.DB_PORT,
+    port: parseInt(process.env.DB_PORT),
     user: process.env.DB_USER,
     password: process.env.DB_PASS,
     database: process.env.DB_NAME,

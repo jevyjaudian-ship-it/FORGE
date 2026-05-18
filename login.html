@@ -23,11 +23,9 @@
     <div class="logo">FO<span>RGE</span></div>
 </nav>
 
-<!-- ONLY ONE PAGE HEADER -->
 <h1 class="page-header">LOGIN</h1>
 
 <div class="main-wrapper">
-    <!-- THE FORM WRAPS THE CARD AND THE BUTTON -->
     <form onsubmit="handleLogin(event)" class="login-form">
         <div class="luxury-card">
             <h2 class="ui-title">LOG IN</h2>
@@ -65,7 +63,7 @@ function handleLogin(event) {
         return;
     }
 
-    fetch("http://localhost:3000/login", {
+    fetch("https://forge-r4qb.onrender.com/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ 
