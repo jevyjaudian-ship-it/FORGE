@@ -47,7 +47,6 @@
             </div>
         </div>
 
-        <!-- ONLY ONE BUTTON -->
         <button type="submit" class="oval-login-btn">Login</button>
     </form>
 </div>
@@ -61,7 +60,7 @@ function handleLogin(event) {
     const passwordInput = document.getElementById('password').value;
 
     if (!emailInput || !passwordInput) {
-        // SWAPPED: alert -> showAlert
+       
         showAlert("Wait!", "Please fill in all fields before logging in.");
         return;
     }
@@ -82,15 +81,14 @@ function handleLogin(event) {
             localStorage.setItem("customerEmail", data.email);
             localStorage.setItem("userRole", data.role);
 
-            // Determine where they go after clicking "Continue"
+   
             const destination = data.role === 'admin' ? "admin.html" : "dashboard_page.html";
 
-            // SWAPPED: alert -> showAlert
-            // We pass the destination as the 3rd argument
+
             showAlert("Success", "Welcome back, " + data.name + "!", destination);
 
         } else {
-            // SWAPPED: alert -> showAlert
+            
             showAlert("Login Failed", data.message);
         }
     })
