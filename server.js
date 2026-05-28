@@ -193,27 +193,44 @@ app.post("/login", (req, res) => {
     });
 });
 
+
 // REGISTER ROUTE
 app.post("/register", (req, res) => {
     const { name, phone_num, email, password } = req.body;
 
-    // Check if email already exists
     const checkSql = "SELECT * FROM customer WHERE email = ?";
+
     db.query(checkSql, [email], (err, result) => {
-        if (result.length > 0) {
-            return res.json({ success: false, message: "Email already registered!" });
+        if (err) {
+            console.error("Database Connection Error (Check):", err);
+            return res.status(500).json({ 
+                success: false, 
+                message: "Could not connect to database. Please check if Aiven is running." 
+            });
         }
 
-        // If new, insert into database
-        // We use NOW() for the date_created column
-        const sql = "INSERT INTO customer (name, phone_num, email, password, date_created) VALUES (?, ?, ?, ?, NOW())";
+        if (result && result.length > 0) {
+            return res.json({ 
+                success: false, 
+                message: "This email is already registered. Try logging in!" 
+            });
+        }
+
+        const sql = "INSERT INTO customer (name, phone_num, email, password, role, date_created) VALUES (?, ?, ?, ?, 'user', NOW())";
         
-        db.query(sql, [name, phone_num, email, password], (err, result) => {
-            if (err) {
-                console.error(err);
-                return res.status(500).json({ success: false, message: "Database error" });
+        db.query(sql, [name, phone_num, email, password], (insertErr, insertResult) => {
+            if (insertErr) {
+                console.error("Database Insert Error:", insertErr);
+                return res.status(500).json({ 
+                    success: false, 
+                    message: "Failed to create account. Please try again later." 
+                });
             }
-            res.json({ success: true, message: "User registered!" });
+
+            res.json({ 
+                success: true, 
+                message: "Account created successfully! Welcome to Luxe Nails." 
+            });
         });
     });
 });
