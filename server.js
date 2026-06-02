@@ -62,8 +62,7 @@ app.get("/my-appointments/:customerId", (req, res) => {
     });
 });
 
-// 1. GET ALL APPOINTMENTS (For the Admin Table)
-// 1. GET ALL APPOINTMENTS (Updated with Clean Date and No Nulls)
+
 app.get("/admin/appointments", (req, res) => {
     const sql = `
         SELECT a.appointment_id, c.name as customer_name, s.full_name as staff_name, 
@@ -79,15 +78,14 @@ app.get("/admin/appointments", (req, res) => {
     
     db.query(sql, (err, result) => {
         if (err) {
-            console.error("SQL Error:", err); // This will tell you if the SQL is wrong
+            console.error("SQL Error:", err); 
             return res.status(500).send(err);
         }
         res.json(result);
     });
 });
 
-// 2. GET DASHBOARD STATS (Fixed Revenue math)
-// GET ADMIN DASHBOARD STATS
+
 app.get("/admin/stats", (req, res) => {
     const statsSql = `
         SELECT 
@@ -124,15 +122,14 @@ app.get("/admin/stats", (req, res) => {
             return res.status(500).json({ success: false, message: "Database error" });
         }
 
-        // Send the data back to the Admin Panel
         res.json({
-            today_revenue: result[0].total_revenue, // We keep the name 'today_revenue' so your frontend JS doesn't have to change
+            today_revenue: result[0].total_revenue, 
             top_staff: result[0].top_staff || "No Bookings Yet",
             pending_count: result[0].pending_count
         });
     });
 });
-// 3. UPDATE APPOINTMENT STATUS (Confirm/Cancel)
+
 app.post("/admin/update-status", (req, res) => {
     const { appointment_id, status } = req.body;
     const sql = "UPDATE appointment SET status = ? WHERE appointment_id = ?";
@@ -144,10 +141,9 @@ app.post("/admin/update-status", (req, res) => {
 
 
 app.post("/appointment", (req, res) => {
-    // We added 'time' here to match what the checkout page sends
+  
     const { customer_id, staff_id, date, time, start_time } = req.body;
     
-    // Use 'time' if 'start_time' is missing
     const finalTime = time || start_time;
 
     const sql = "INSERT INTO appointment (customer_id, staff_id, appointment_date, start_time, end_time, status) VALUES (?, ?, ?, ?, ?, 'Pending')";
@@ -185,7 +181,7 @@ app.post("/login", (req, res) => {
                 customer_id: user.customer_id, 
                 name: user.name,
                 email: user.email,
-                role: user.role // <--- SEND THE ROLE (admin or user)
+                role: user.role // SEND THE ROLE (admin or user)
             });
         } else {
             res.json({ success: false, message: "Invalid credentials" });
@@ -194,7 +190,7 @@ app.post("/login", (req, res) => {
 });
 
 
-// REGISTER ROUTE
+
 app.post("/register", (req, res) => {
     const { name, phone_num, email, password } = req.body;
 
@@ -235,7 +231,7 @@ app.post("/register", (req, res) => {
     });
 });
 
-// ADD NEW SERVICE
+
 app.post("/admin/add-service", (req, res) => {
     const { service_name, description, price, duration } = req.body;
     const sql = "INSERT INTO service (service_name, description, price, duration) VALUES (?, ?, ?, ?)";
@@ -259,7 +255,6 @@ app.post("/admin/add-staff", (req, res) => {
 app.post("/appointment/payment", (req, res) => {
     const { appointment_id, amount, payment_method } = req.body;
     
-    // Default status is 'Paid' for online or 'Pending' for Cash
     const status = (payment_method === 'Cash') ? 'Pending' : 'Paid';
 
     const sql = `INSERT INTO payment (appointment_id, payment_date, amount, payment_method, payment_status) 
